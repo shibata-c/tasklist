@@ -35,19 +35,19 @@ public class EditServlet extends HttpServlet {
         EntityManager em = DBUtil.createEntityManager();
 
         //該当のIDのタスク1件のみをデータベースから取得
-        Task m = em.find(Task.class, Integer.parseInt(request.getSession().getId()));
+        Task m = em.find(Task.class, Integer.parseInt(request.getParameter("id")));
 
         em.close();
+
+        // タスクの情報とセッションIDをリクエストスコープに登録
+        request.setAttribute("task", m);
+        request.setAttribute("_token", request.getSession().getId());
 
         //タスクIDをセッションスコープに登録
         request.getSession().setAttribute("task_id", m.getId());
 
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/edit.jsp");
         rd.forward(request, response);
-
-        // タスクの情報とセッションIDをリクエストスコープに登録
-        request.setAttribute("task", m);
-        request.setAttribute("_token", request.getSession().getId());
 
         // メッセージデータが存在しているときのみ
         // メッセージIDをセッションスコープに登録
